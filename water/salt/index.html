@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>水質測定データ可視化</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>水質測定データ経年変化グラフ</h1>
+
+        <div class="controls">
+            <div class="control-group">
+                <div class="control-title">表示地点</div>
+                <div class="location-groups">
+                    <!-- St.2 グループ -->
+                    <div class="location-group">
+                        <div class="checkbox-tree">
+                            <ul>
+                                <li>
+                                    <input type="checkbox" id="St.2" data-parent="true" checked>
+                                    <label for="St.2">St.2</label>
+                                    <ul>
+                                        <li>
+                                            <input type="checkbox" id="St.2_表層" data-location="St.2 表層" data-parent="St.2" checked>
+                                            <label for="St.2_表層">St.2 表層</label>
+                                        </li>
+                                        <li>
+                                            <input type="checkbox" id="St.2_低層" data-location="St.2 低層" data-parent="St.2" checked>
+                                            <label for="St.2_低層">St.2 低層</label>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- St.4 グループ -->
+                    <div class="location-group">
+                        <div class="checkbox-tree">
+                            <ul>
+                                <li>
+                                    <input type="checkbox" id="St.4" data-parent="true" checked>
+                                    <label for="St.4">St.4</label>
+                                    <ul>
+                                        <li>
+                                            <input type="checkbox" id="St.4_表層" data-location="St.4 表層" data-parent="St.4" checked>
+                                            <label for="St.4_表層">St.4 表層</label>
+                                        </li>
+                                        <li>
+                                            <input type="checkbox" id="St.4_低層" data-location="St.4 低層" data-parent="St.4" checked>
+                                            <label for="St.4_低層">St.4 低層</label>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- オイルフェンス グループ -->
+                    <div class="location-group">
+                        <div class="checkbox-tree">
+                            <ul>
+                                <li>
+                                    <input type="checkbox" id="オイルフェンス" data-parent="true" checked>
+                                    <label for="オイルフェンス">オイルフェンス</label>
+                                    <ul>
+                                        <li>
+                                            <input type="checkbox" id="オイルフェンス_表層" data-location="オイルフェンス 表層" data-parent="オイルフェンス" checked>
+                                            <label for="オイルフェンス_表層">オイルフェンス 表層</label>
+                                        </li>
+                                        <li>
+                                            <input type="checkbox" id="オイルフェンス_低層" data-location="オイルフェンス 低層" data-parent="オイルフェンス" checked>
+                                            <label for="オイルフェンス_低層">オイルフェンス 低層</label>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="control-title">表示年</div>
+                <div class="checkbox-tree">
+                    <ul>
+                        <li>
+                            <input type="checkbox" id="all-years" data-parent="true" checked>
+                            <label for="all-years">全年</label>
+                            <ul>
+                                <li>
+                                    <input type="checkbox" id="year-2021" data-year="2021" data-parent="all-years" checked>
+                                    <label for="year-2021">2021年</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" id="year-2022" data-year="2022" data-parent="all-years" checked>
+                                    <label for="year-2022">2022年</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" id="year-2023" data-year="2023" data-parent="all-years" checked>
+                                    <label for="year-2023">2023年</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" id="year-2024" data-year="2024" data-parent="all-years" checked>
+                                    <label for="year-2024">2024年</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" id="year-2025" data-year="2025" data-parent="all-years" checked>
+                                    <label for="year-2025">2025年</label>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="graph-container">
+            <canvas id="chartContainer"></canvas>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
