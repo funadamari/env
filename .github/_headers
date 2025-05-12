@@ -1,1 +1,7 @@
-/water/salt/*  Content-Security-Policy: frame-ancestors https://sites.google.com
+/water/salt/*  Content-Security-Policy: 
+    default-src 'self'; 
+    font-src 'self' https://fonts.gstatic.com https://sites.google.com; 
+    script-src 'self' https://sites.google.com; 
+    style-src 'self' https://sites.google.com; 
+    img-src 'self' data: https://sites.google.com; 
+    frame-ancestors https://sites.google.com
