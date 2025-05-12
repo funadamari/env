@@ -1,3 +1,1 @@
-/water/salt/*  Content-Security-Policy: 
-    default-src * 'unsafe-inline' 'unsafe-eval'; 
-    frame-ancestors https://sites.google.com
+/water/salt/*  Content-Security-Policy: frame-ancestors https://sites.google.com
