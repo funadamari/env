@@ -1,7 +1,3 @@
 /water/salt/*  Content-Security-Policy: 
-    default-src 'self'; 
-    font-src 'self' https://fonts.gstatic.com https://sites.google.com; 
-    script-src 'self' https://sites.google.com; 
-    style-src 'self' https://sites.google.com; 
-    img-src 'self' data: https://sites.google.com; 
+    default-src * 'unsafe-inline' 'unsafe-eval'; 
     frame-ancestors https://sites.google.com
