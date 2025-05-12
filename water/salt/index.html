@@ -9,125 +9,234 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        /* コンテンツ本体のスタイル */
+        .content {
+            padding: 20px;
+            /* その他のスタイル */
+        }
+
+        /* 外部リンクアイコンのコンテナ */
+        .external-link-container {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: none;
+            /* 初期状態では非表示 */
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            padding: 2px;
+        }
+
+        /* アイコンボタン */
+        .external-link-btn {
+            width: 24px;
+            height: 24px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3px;
+            transition: background-color 0.2s;
+        }
+
+        .external-link-btn:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+        }
+
+        /* iframe内であることを検知するためのスタイル */
+        .embedded-container {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>水質測定データ経年変化グラフ（塩分）</h1>
-
-        <div class="controls">
-            <div class="control-group">
-                <div class="control-title">表示地点</div>
-                <div class="location-groups">
-                    <!-- St.2 グループ -->
-                    <div class="location-group">
-                        <div class="checkbox-tree">
-                            <ul>
-                                <li>
-                                    <input type="checkbox" id="St.2" data-parent="true" checked>
-                                    <label for="St.2">St.2</label>
-                                    <ul>
-                                        <li>
-                                            <input type="checkbox" id="St.2_表層" data-location="St.2 表層" data-parent="St.2" checked>
-                                            <label for="St.2_表層">St.2 表層</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="St.2_低層" data-location="St.2 低層" data-parent="St.2" checked>
-                                            <label for="St.2_低層">St.2 低層</label>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- St.4 グループ -->
-                    <div class="location-group">
-                        <div class="checkbox-tree">
-                            <ul>
-                                <li>
-                                    <input type="checkbox" id="St.4" data-parent="true" checked>
-                                    <label for="St.4">St.4</label>
-                                    <ul>
-                                        <li>
-                                            <input type="checkbox" id="St.4_表層" data-location="St.4 表層" data-parent="St.4" checked>
-                                            <label for="St.4_表層">St.4 表層</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="St.4_低層" data-location="St.4 低層" data-parent="St.4" checked>
-                                            <label for="St.4_低層">St.4 低層</label>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- オイルフェンス グループ -->
-                    <div class="location-group">
-                        <div class="checkbox-tree">
-                            <ul>
-                                <li>
-                                    <input type="checkbox" id="オイルフェンス" data-parent="true" checked>
-                                    <label for="オイルフェンス">オイルフェンス</label>
-                                    <ul>
-                                        <li>
-                                            <input type="checkbox" id="オイルフェンス_表層" data-location="オイルフェンス 表層" data-parent="オイルフェンス" checked>
-                                            <label for="オイルフェンス_表層">オイルフェンス 表層</label>
-                                        </li>
-                                        <li>
-                                            <input type="checkbox" id="オイルフェンス_低層" data-location="オイルフェンス 低層" data-parent="オイルフェンス" checked>
-                                            <label for="オイルフェンス_低層">オイルフェンス 低層</label>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <div class="control-title">表示年</div>
-                <div class="checkbox-tree">
-                    <ul>
-                        <li>
-                            <input type="checkbox" id="all-years" data-parent="true" checked>
-                            <label for="all-years">全年</label>
-                            <ul>
-                                <li>
-                                    <input type="checkbox" id="year-2021" data-year="2021" data-parent="all-years" checked>
-                                    <label for="year-2021">2021年</label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" id="year-2022" data-year="2022" data-parent="all-years" checked>
-                                    <label for="year-2022">2022年</label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" id="year-2023" data-year="2023" data-parent="all-years" checked>
-                                    <label for="year-2023">2023年</label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" id="year-2024" data-year="2024" data-parent="all-years" checked>
-                                    <label for="year-2024">2024年</label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" id="year-2025" data-year="2025" data-parent="all-years" checked>
-                                    <label for="year-2025">2025年</label>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="graph-container">
-            <canvas id="chartContainer"></canvas>
-        </div>
+    <!-- 外部リンクアイコン（初期状態では非表示） -->
+    <div class="external-link-container" id="externalLinkContainer">
+        <button class="external-link-btn" id="externalLinkBtn" title="別タブで開く">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                <path d="M15 3h6v6"></path>
+                <path d="M10 14L21 3"></path>
+            </svg>
+        </button>
     </div>
 
-    <script src="script.js"></script>
+    <!-- 実際のコンテンツ -->
+    <div class="embedded-container">
+        <div class="content">
+            <h1>水質測定データ経年変化グラフ（塩分）</h1>
+            <p>ここに表示したいコンテンツを配置します。マウスを乗せると右上に「別タブで開く」アイコンが表示されます。</p>
+
+            <div class="controls">
+                <div class="control-group">
+                    <div class="control-title">表示地点</div>
+                    <div class="location-groups">
+                        <!-- St.2 グループ -->
+                        <div class="location-group">
+                            <div class="checkbox-tree">
+                                <ul>
+                                    <li>
+                                        <input type="checkbox" id="St.2" data-parent="true" checked>
+                                        <label for="St.2">St.2</label>
+                                        <ul>
+                                            <li>
+                                                <input type="checkbox" id="St.2_表層" data-location="St.2 表層" data-parent="St.2" checked>
+                                                <label for="St.2_表層">St.2 表層</label>
+                                            </li>
+                                            <li>
+                                                <input type="checkbox" id="St.2_低層" data-location="St.2 低層" data-parent="St.2" checked>
+                                                <label for="St.2_低層">St.2 低層</label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- St.4 グループ -->
+                        <div class="location-group">
+                            <div class="checkbox-tree">
+                                <ul>
+                                    <li>
+                                        <input type="checkbox" id="St.4" data-parent="true" checked>
+                                        <label for="St.4">St.4</label>
+                                        <ul>
+                                            <li>
+                                                <input type="checkbox" id="St.4_表層" data-location="St.4 表層" data-parent="St.4" checked>
+                                                <label for="St.4_表層">St.4 表層</label>
+                                            </li>
+                                            <li>
+                                                <input type="checkbox" id="St.4_低層" data-location="St.4 低層" data-parent="St.4" checked>
+                                                <label for="St.4_低層">St.4 低層</label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- オイルフェンス グループ -->
+                        <div class="location-group">
+                            <div class="checkbox-tree">
+                                <ul>
+                                    <li>
+                                        <input type="checkbox" id="オイルフェンス" data-parent="true" checked>
+                                        <label for="オイルフェンス">オイルフェンス</label>
+                                        <ul>
+                                            <li>
+                                                <input type="checkbox" id="オイルフェンス_表層" data-location="オイルフェンス 表層" data-parent="オイルフェンス" checked>
+                                                <label for="オイルフェンス_表層">オイルフェンス 表層</label>
+                                            </li>
+                                            <li>
+                                                <input type="checkbox" id="オイルフェンス_低層" data-location="オイルフェンス 低層" data-parent="オイルフェンス" checked>
+                                                <label for="オイルフェンス_低層">オイルフェンス 低層</label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-title">表示年</div>
+                    <div class="checkbox-tree">
+                        <ul>
+                            <li>
+                                <input type="checkbox" id="all-years" data-parent="true" checked>
+                                <label for="all-years">全年</label>
+                                <ul>
+                                    <li>
+                                        <input type="checkbox" id="year-2021" data-year="2021" data-parent="all-years" checked>
+                                        <label for="year-2021">2021年</label>
+                                    </li>
+                                    <li>
+                                        <input type="checkbox" id="year-2022" data-year="2022" data-parent="all-years" checked>
+                                        <label for="year-2022">2022年</label>
+                                    </li>
+                                    <li>
+                                        <input type="checkbox" id="year-2023" data-year="2023" data-parent="all-years" checked>
+                                        <label for="year-2023">2023年</label>
+                                    </li>
+                                    <li>
+                                        <input type="checkbox" id="year-2024" data-year="2024" data-parent="all-years" checked>
+                                        <label for="year-2024">2024年</label>
+                                    </li>
+                                    <li>
+                                        <input type="checkbox" id="year-2025" data-year="2025" data-parent="all-years" checked>
+                                        <label for="year-2025">2025年</label>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="graph-container">
+                <canvas id="chartContainer"></canvas>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const container = document.querySelector('.embedded-container');
+                const externalLinkContainer = document.getElementById('externalLinkContainer');
+                const externalLinkBtn = document.getElementById('externalLinkBtn');
+
+                // iframe内で表示されているかどうかを確認
+                const isInIframe = window.self !== window.top;
+
+                if (isInIframe) {
+                    // iframe内で表示されている場合の処理
+
+                    // マウスオーバー時にアイコンを表示
+                    container.addEventListener('mouseenter', function () {
+                        externalLinkContainer.style.display = 'block';
+                    });
+
+                    // マウスアウト時にアイコンを非表示
+                    container.addEventListener('mouseleave', function () {
+                        externalLinkContainer.style.display = 'none';
+                    });
+
+                    // アイコンクリック時に別タブでページを開く
+                    externalLinkBtn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.open('https://ユーザー名.github.io/env/water/salt/index.html', '_blank');
+                    });
+                }
+
+                // モバイルデバイス対応（タッチ開始時にアイコンを表示）
+                container.addEventListener('touchstart', function () {
+                    if (isInIframe) {
+                        externalLinkContainer.style.display = 'block';
+                        // 5秒後に非表示（オプション）
+                        setTimeout(function () {
+                            externalLinkContainer.style.display = 'none';
+                        }, 5000);
+                    }
+                });
+            });
+        </script>
+        <script src="script.js"></script>
 </body>
 
 </html>
