@@ -1,0 +1,1 @@
+/water/salt/*  Content-Security-Policy: frame-ancestors https://sites.google.com
