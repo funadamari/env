@@ -114,10 +114,9 @@ function createTimelineDatasets() {
     const selectedLocations = getSelectedLocations();
     const selectedYears = getSelectedYears();
     
-    // 全期間の年月を取得
+    // 全期間の年月を取得（データ全体から、選択された年に関係なく）
     let allYearMonths = [];
-    const selectedData = parsedData.filter(row => selectedYears.includes(row.year));
-    selectedData.forEach(row => {
+    parsedData.forEach(row => {
         const yearMonth = `${row.year}/${row.month.toString().padStart(2, '0')}`;
         if (!allYearMonths.includes(yearMonth)) {
             allYearMonths.push(yearMonth);
@@ -129,10 +128,13 @@ function createTimelineDatasets() {
     
     // 選択された地点ごとにデータセットを作成
     selectedLocations.forEach(location => {
+        // 選択された年のデータのみフィルタリング
+        const filteredData = parsedData.filter(row => selectedYears.includes(row.year));
+        
         // 実際にデータが存在する年月と値のペアを作成
         const dataPoints = [];
         
-        selectedData.forEach(row => {
+        filteredData.forEach(row => {
             if (row[location] !== null && row[location] !== undefined && row[location] !== '') {
                 dataPoints.push({
                     yearMonth: row.yearMonth,
@@ -155,6 +157,7 @@ function createTimelineDatasets() {
                 return dataPoint ? dataPoint.value : null;
             });
             
+            // 年ごとに分けるのではなく、地点ごとに1つのデータセットを作成
             const color = colorScheme[location].base;
             const dataset = {
                 label: location,
@@ -167,7 +170,7 @@ function createTimelineDatasets() {
                 pointRadius: 3,
                 pointHoverRadius: 5,
                 fill: false,
-                spanGaps: false // データが欠落している箇所は線を引かない
+                spanGaps: true // データが欠落している箇所は線を引かない
             };
             datasets.push(dataset);
         }
