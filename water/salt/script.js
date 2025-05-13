@@ -227,7 +227,7 @@ function initChart(datasets, labels, xAxisTitle) {
                     max: 6,
                     title: {
                         display: true,
-                        text: '測定値'
+                        text: '測定値（s/m）'
                     }
                 },
                 x: {
