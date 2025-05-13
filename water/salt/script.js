@@ -3,6 +3,12 @@ let parsedData;
 let chart;
 const allLocations = ["St.2 表層", "St.2 低層", "St.4 表層", "St.4 低層", "オイルフェンス 表層", "オイルフェンス 低層"];
 const allYears = [2021, 2022, 2023, 2024, 2025];
+// 表示モードの定義
+const DISPLAY_MODES = {
+    MONTHLY: 'monthly', // 1月から12月の月別表示（デフォルト）
+    TIMELINE: 'timeline' // 時系列表示
+};
+let currentDisplayMode = DISPLAY_MODES.MONTHLY; // 初期表示モード
 
 // 色の設定
 const colorScheme = {
@@ -52,13 +58,14 @@ function parseCSVData(csvData) {
         return {
             year: year,
             month: month,
+            yearMonth: `${year}/${month.toString().padStart(2, '0')}`,
             ...row
         };
     });
 }
 
-// データセットの作成
-function createDatasets() {
+// データセットの作成（月別表示モード用）
+function createMonthlyDatasets() {
     const datasets = [];
     const selectedLocations = getSelectedLocations();
     const selectedYears = getSelectedYears();
@@ -100,26 +107,107 @@ function createDatasets() {
     return datasets;
 }
 
+// データセットの作成（時系列表示モード用）
+function createTimelineDatasets() {
+    const datasets = [];
+    const selectedLocations = getSelectedLocations();
+    const selectedYears = getSelectedYears();
+    
+    // 選択された地点ごとにデータセットを作成
+    selectedLocations.forEach(location => {
+        // 選択された年のデータのみをフィルタリング
+        const filteredData = parsedData.filter(row => selectedYears.includes(row.year));
+        
+        // 時系列順にソート
+        filteredData.sort((a, b) => {
+            if (a.year !== b.year) return a.year - b.year;
+            return a.month - b.month;
+        });
+        
+        // 時系列データを作成
+        const timelineData = [];
+        const timeLabels = [];
+        
+        filteredData.forEach(row => {
+            if (row[location] !== null && row[location] !== undefined && row[location] !== '') {
+                timelineData.push(row[location]);
+                timeLabels.push(row.yearMonth);
+            }
+        });
+        
+        // データがある場合のみデータセットを追加
+        if (timelineData.length > 0) {
+            const color = colorScheme[location].base;
+            const dataset = {
+                label: location,
+                data: timelineData,
+                borderColor: color,
+                backgroundColor: 'transparent',
+                borderWidth: 2,
+                borderDash: colorScheme[location].dash,
+                tension: 0,
+                pointRadius: 3,
+                pointHoverRadius: 5,
+                fill: false
+            };
+            datasets.push(dataset);
+        }
+    });
+    
+    return datasets;
+}
+
 // チャート更新
 function updateChart() {
-    const datasets = createDatasets();
+    let datasets, labels, title;
+    
+    if (currentDisplayMode === DISPLAY_MODES.MONTHLY) {
+        datasets = createMonthlyDatasets();
+        labels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+        title = '月';
+    } else {
+        // 時系列表示モードの場合
+        const timelineData = createTimelineDatasets();
+        datasets = timelineData;
+        
+        // 時系列の期間ラベルを作成
+        labels = [];
+        const selectedYears = getSelectedYears();
+        const filteredData = parsedData.filter(row => selectedYears.includes(row.year));
+        
+        // 時系列順にソート
+        filteredData.sort((a, b) => {
+            if (a.year !== b.year) return a.year - b.year;
+            return a.month - b.month;
+        });
+        
+        // 重複を排除してラベルを作成
+        const uniqueLabels = new Set();
+        filteredData.forEach(row => {
+            uniqueLabels.add(row.yearMonth);
+        });
+        labels = Array.from(uniqueLabels).sort();
+        title = '期間';
+    }
 
     if (chart) {
         chart.data.datasets = datasets;
+        chart.data.labels = labels;
+        chart.options.scales.x.title.text = title;
         chart.update();
     } else {
-        initChart(datasets);
+        initChart(datasets, labels, title);
     }
 }
 
 // チャートの初期化
-function initChart(datasets) {
+function initChart(datasets, labels, xAxisTitle) {
     const ctx = document.getElementById('chartContainer').getContext('2d');
 
     chart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+            labels: labels,
             datasets: datasets
         },
         options: {
@@ -137,7 +225,7 @@ function initChart(datasets) {
                 x: {
                     title: {
                         display: true,
-                        text: '月'
+                        text: xAxisTitle || '月'
                     }
                 }
             },
@@ -173,6 +261,20 @@ function getSelectedYears() {
         const checkbox = document.getElementById(`year-${year}`);
         return checkbox && checkbox.checked;
     });
+}
+
+// 表示モードの切り替え
+function toggleDisplayMode() {
+    if (currentDisplayMode === DISPLAY_MODES.MONTHLY) {
+        currentDisplayMode = DISPLAY_MODES.TIMELINE;
+        document.getElementById('toggle-mode-btn').textContent = '月別表示に切り替え';
+        document.getElementById('current-mode-text').textContent = '時系列表示モード';
+    } else {
+        currentDisplayMode = DISPLAY_MODES.MONTHLY;
+        document.getElementById('toggle-mode-btn').textContent = '時系列表示に切り替え';
+        document.getElementById('current-mode-text').textContent = '月別表示モード';
+    }
+    updateChart();
 }
 
 // チェックボックスのイベント設定
@@ -219,6 +321,9 @@ function setupCheckboxEvents() {
     document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', updateChart);
     });
+    
+    // 表示モード切り替えボタンのイベント設定
+    document.getElementById('toggle-mode-btn').addEventListener('click', toggleDisplayMode);
 }
 
 // 初期化
