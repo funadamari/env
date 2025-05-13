@@ -97,7 +97,8 @@ function createMonthlyDatasets() {
                     tension: 0, // 0にすることで直線になります
                     pointRadius: 3,
                     pointHoverRadius: 5,
-                    fill: false
+                    fill: false,
+                    spanGaps: false // nullの箇所で線を繋がない
                 };
                 datasets.push(dataset);
             }
@@ -113,30 +114,47 @@ function createTimelineDatasets() {
     const selectedLocations = getSelectedLocations();
     const selectedYears = getSelectedYears();
     
+    // 全期間の年月を取得
+    let allYearMonths = [];
+    const selectedData = parsedData.filter(row => selectedYears.includes(row.year));
+    selectedData.forEach(row => {
+        const yearMonth = `${row.year}/${row.month.toString().padStart(2, '0')}`;
+        if (!allYearMonths.includes(yearMonth)) {
+            allYearMonths.push(yearMonth);
+        }
+    });
+    
+    // 時系列順にソート
+    allYearMonths.sort();
+    
     // 選択された地点ごとにデータセットを作成
     selectedLocations.forEach(location => {
-        // 選択された年のデータのみをフィルタリング
-        const filteredData = parsedData.filter(row => selectedYears.includes(row.year));
+        // 実際にデータが存在する年月と値のペアを作成
+        const dataPoints = [];
         
-        // 時系列順にソート
-        filteredData.sort((a, b) => {
-            if (a.year !== b.year) return a.year - b.year;
-            return a.month - b.month;
-        });
-        
-        // 時系列データを作成
-        const timelineData = [];
-        const timeLabels = [];
-        
-        filteredData.forEach(row => {
+        selectedData.forEach(row => {
             if (row[location] !== null && row[location] !== undefined && row[location] !== '') {
-                timelineData.push(row[location]);
-                timeLabels.push(row.yearMonth);
+                dataPoints.push({
+                    yearMonth: row.yearMonth,
+                    value: row[location]
+                });
             }
         });
         
+        // データポイントを時系列で並べ替え
+        dataPoints.sort((a, b) => {
+            return allYearMonths.indexOf(a.yearMonth) - allYearMonths.indexOf(b.yearMonth);
+        });
+        
         // データがある場合のみデータセットを追加
-        if (timelineData.length > 0) {
+        if (dataPoints.length > 0) {
+            // 表示用のデータを準備
+            // allYearMonthsの各要素に対して、dataPointsに一致するデータがあればその値を、なければnullを設定
+            const timelineData = allYearMonths.map(yearMonth => {
+                const dataPoint = dataPoints.find(dp => dp.yearMonth === yearMonth);
+                return dataPoint ? dataPoint.value : null;
+            });
+            
             const color = colorScheme[location].base;
             const dataset = {
                 label: location,
@@ -148,13 +166,17 @@ function createTimelineDatasets() {
                 tension: 0,
                 pointRadius: 3,
                 pointHoverRadius: 5,
-                fill: false
+                fill: false,
+                spanGaps: false // データが欠落している箇所は線を引かない
             };
             datasets.push(dataset);
         }
     });
     
-    return datasets;
+    return {
+        datasets: datasets,
+        labels: allYearMonths
+    };
 }
 
 // チャート更新
@@ -168,25 +190,8 @@ function updateChart() {
     } else {
         // 時系列表示モードの場合
         const timelineData = createTimelineDatasets();
-        datasets = timelineData;
-        
-        // 時系列の期間ラベルを作成
-        labels = [];
-        const selectedYears = getSelectedYears();
-        const filteredData = parsedData.filter(row => selectedYears.includes(row.year));
-        
-        // 時系列順にソート
-        filteredData.sort((a, b) => {
-            if (a.year !== b.year) return a.year - b.year;
-            return a.month - b.month;
-        });
-        
-        // 重複を排除してラベルを作成
-        const uniqueLabels = new Set();
-        filteredData.forEach(row => {
-            uniqueLabels.add(row.yearMonth);
-        });
-        labels = Array.from(uniqueLabels).sort();
+        datasets = timelineData.datasets;
+        labels = timelineData.labels;
         title = '期間';
     }
 
