@@ -1,0 +1,52 @@
+{
+  "title": "降雨時の大腸菌挙動調査",
+  "pages": [{
+      "page": 1,
+      "title": "降雨時の大腸菌挙動調査",
+      "image": "https://funadamari.github.io/env/images/daichokin-chosa_260904sl_1.jpg",
+      "audio": "https://funadamari.github.io/env/audio/daichokin-chosa_260904sl_1.mp3"
+    },
+    {
+      "page": 2,
+      "title": "課題の確信",
+      "image": "https://funadamari.github.io/env/images/daichokin-chosa_260904sl_2.jpg",
+      "audio": "https://funadamari.github.io/env/audio/daichokin-chosa_260904sl_2.mp3"
+    },
+    {
+      "page": 3,
+      "title": "現場の特異性",
+      "image": "https://funadamari.github.io/env/images/daichokin-chosa_260904sl_3.jpg",
+      "audio": "https://funadamari.github.io/env/audio/daichokin-chosa_260904sl_3.mp3"
+    },
+    {
+      "page": 4,
+      "title": "大腸菌の動態メカニズムと水質環境の前提条件",
+      "image": "https://funadamari.github.io/env/images/daichokin-chosa_260904sl_4.jpg",
+      "audio": "https://funadamari.github.io/env/audio/daichokin-chosa_260904sl_4.mp3"
+    },
+    {
+      "page": 5,
+      "title": "ダイナミクス",
+      "image": "https://funadamari.github.io/env/images/daichokin-chosa_260904sl_5.jpg",
+      "audio": "https://funadamari.github.io/env/audio/daichokin-chosa_260904sl_5.mp3"
+    },
+    {
+      "page": 6,
+      "title": "空間調査デザイン",
+      "image": "https://funadamari.github.io/env/images/daichokin-chosa_260904sl_6.jpg",
+      "audio": "https://funadamari.github.io/env/audio/daichokin-chosa_260904sl_5.mp3"
+    },
+    {
+      "page": 7,
+      "title": "オペレーション設計",
+      "image": "https://funadamari.github.io/env/images/daichokin-chosa_260904sl_7.jpg",
+      "audio": "https://funadamari.github.io/env/audio/daichokin-chosa_260904sl_5.mp3"
+    },
+    {
+      "page": 8,
+      "title": "展望",
+      "image": "https://funadamari.github.io/env/images/daichokin-chosa_260904sl_8.jpg",
+      "audio": "https://funadamari.github.io/env/audio/daichokin-chosa_260904sl_6.mp3"
+    }
+  ]
+}
