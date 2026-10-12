@@ -1,0 +1,29 @@
+{
+  "title": "ふなだまり環境調査（水質）　2025/12",
+  "pages": [{
+      "page": 1,
+      "title": "現場野帳・横浜港潮位・調査地点・水深",
+      "image": "https://funadamari.github.io/env/images/suishitsu-kensa-2512sl_1.jpg"
+    },
+    {
+      "page": 2,
+      "title": "水温（℃）・水素イオン濃度（pH）",
+      "image": "https://funadamari.github.io/env/images/suishitsu-kensa-2512sl_2.jpg"
+    },
+    {
+      "page": 3,
+      "title": "電気伝導率（COND）・塩分（SALT）",
+      "image": "https://funadamari.github.io/env/images/suishitsu-kensa-2512sl_3.jpg"
+    },
+    {
+      "page": 4,
+      "title": "濁度（TURB）・溶存酸素（DO）",
+      "image": "https://funadamari.github.io/env/images/suishitsu-kensa-2512sl_4.jpg"
+    },
+    {
+      "page": 5,
+      "title": "表層と下層の大腸菌群数を測定してみました",
+      "image": "https://funadamari.github.io/env/images/suishitsu-kensa-2512sl_5.jpg"
+    }
+  ]
+}
